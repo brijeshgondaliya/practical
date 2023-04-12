@@ -1,6 +1,7 @@
 <table class="table table-striped" id="p_table">
     <thead>
         <tr class="text-center">
+        <th> <input type="checkbox" id="check_all_prod"></th>
         <th scope="col">Id</th>
         <th scope="col">Image</th>
         <th scope="col">Name</th>
@@ -14,6 +15,9 @@
         @if(sizeof($all_product) > 0)
             @foreach($all_product as $product)
             <tr id="row_id_{{$product['id']}}" class="text-center">
+                <th>
+                    <input type="checkbox" class="checkbox" data-id="{{$product['id']}}">
+                </th>
                 <td scope="row">{{$product['id']}}</td>
                 <td><img src="../storage/product/{{$product['image']}}" alt="{{$product['name']}}" class="img-responsive" width="100" /></td>
                 <td>{{$product['name']}}</td>

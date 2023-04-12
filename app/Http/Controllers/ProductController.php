@@ -106,36 +106,20 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Delete the multiple product.
      *
-     * @param  \App\Models\Product  $product
+     * @author Brijesh
+     * @param  $request arrray
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function deleteMultiple(Request $request)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
-    {
-        //
+        $ids = $request->ids;
+        Product::whereIn('id',explode(",",$ids))->delete();
+    
+        $all_product = Product::orderBy('id','DESC')->get();
+        $view = view('product-table', ['all_product' => $all_product])->render();
+        
+        return response()->json(['view' => $view]);
     }
 }

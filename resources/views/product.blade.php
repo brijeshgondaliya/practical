@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header">
                     <a href="javascript:void(0)" class="btn btn-info ml-3" id="add-product">Add New</a>
-                    <button class="btn btn-danger m-1">Delete</button>
+                    <a href="javascript:void(0)" class="btn btn-danger ml-3 delete-all">Delete</a>
                 </div>
 
                 <div class="card-body">
@@ -136,6 +136,51 @@ $(document).ready(function() {
                     console.log('Error:', data);
                 }
             });
+        }
+    });
+
+    // delete multiple product
+    $(document).on('click', '#check_all_prod',function(e) {
+        if ($(this).is(':checked', true)) {
+            $(".checkbox").prop('checked', true);
+        } else {
+            $(".checkbox").prop('checked', false);
+        }
+    });
+
+    $(document).on('click', '.checkbox').on('click', function() {
+        if ($('.checkbox:checked').length == $('.checkbox').length) {
+            $('#check_all_prod').prop('checked', true);
+        } else {
+            $('#check_all_prod').prop('checked', false);
+        }
+    });
+    $('.delete-all').on('click', function(e) {
+        var pid_arr = [];
+        $(".checkbox:checked").each(function() {
+            pid_arr.push($(this).attr('data-id'));
+        });
+        if (pid_arr.length <= 0) {
+            alert("Please select atleast one product to delete.");
+        } else {
+            if (confirm("Are you sure, you want to delete the selected all products ?")) {
+                var pid_str = pid_arr.join(",");
+                $.ajax({
+                    url: '/multiple-product-delete',
+                    type: 'delete',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: 'ids=' + pid_str,
+                    success: function(data) {
+                        alert("Deleted Successfully");
+                        $('#p_table').html(data.view);
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+            }
         }
     });
 });

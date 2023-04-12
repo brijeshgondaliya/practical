@@ -24,3 +24,4 @@ Route::get('/product', [App\Http\Controllers\ProductController::class, 'index'])
 Route::post('/product-add-update', [App\Http\Controllers\ProductController::class, 'productAddUpdate'])->name('product.add-update');
 Route::get('/product-details/{id}', [App\Http\Controllers\ProductController::class, 'productDetails'])->name('product.details');
 Route::delete('/product-delete/{id}', [App\Http\Controllers\ProductController::class, 'productDelete'])->name('product.delete');
+Route::delete('/multiple-product-delete', [App\Http\Controllers\ProductController::class, 'deleteMultiple'])->name('product.delete-multiple');
