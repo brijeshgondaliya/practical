@@ -16,7 +16,7 @@ class ProductController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of all products.
      *
@@ -30,13 +30,43 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Product Add/Update 
+     * 
+     * @author brijesh
+     * @param array
+     * @return json
      */
-    public function create()
+    public function productAddUpdate(Request $request)
     {
-        //
+        $request->validate([
+            'product_name' => 'required',
+            'upc_no' => 'required',
+            'price' => 'required',
+            'status' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+       ]);
+        
+        $product_data = [
+            'name' => $request->product_name,
+            'price' => $request->price,
+            'upc' => $request->upc_no,
+            'status' => $request->status
+        ];
+        if ($files = $request->file('image')) {
+            //insert new image
+            $filename_extention = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filename_extention, PATHINFO_FILENAME);
+            $new_file_name = time() . '_' . $filename;
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $file = $request->file('image')->storeAs("public/product/",       $new_file_name . "." . $extension);
+
+            $image = $new_file_name . "." . $extension;
+            $product_data['image'] = $image;
+        }
+        $product_add = Product::create($product_data);
+        $all_product = Product::orderBy('id','DESC')->get();
+        $view = view('product-table', ['all_product' => $all_product])->render();
+        return response()->json(['view' => $view]);
     }
 
     /**

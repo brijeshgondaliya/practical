@@ -17,6 +17,7 @@
                 </div>
 
                 <div class="card-body">
+                    @include('product-table')
                 </div>
             </div>
         </div>
@@ -79,9 +80,7 @@
 </div>
 
 <script >
-var all_product = {{ count($all_product) }};
-$(document).ready(function() {
-    
+$(document).ready(function() {    
     //  add product 
     $('#add-product').click(function() {
         $('#product_id').val('');
@@ -91,5 +90,45 @@ $(document).ready(function() {
         $('#img-preview').attr('src', '../no-image.png');
     });
 });
+
+// add/update product data
+$('body').on('submit', '#product_form', function(e) {
+    e.preventDefault();
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    var productData = new FormData(this);
+    $.ajax({
+        type: 'post',
+        url: '{{ route('product.add-update') }}',
+        data: productData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function( data ) {
+            $('#product_form').trigger("reset");
+            $('#product-modal').modal('hide');
+            $('#p_table').html(data.view);
+        },
+        error: function(data) {
+            console.log('error:', data);
+        }
+    });
+});
+
+function readURL(input) {
+    id = '#img-preview';
+    // alert(id);
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $(id).attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+        $('#img-preview').removeClass('hidden');
+    }
+}
 </script>
 @endsection
