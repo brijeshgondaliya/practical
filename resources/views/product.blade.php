@@ -64,7 +64,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Image</label>
                         <div class="col-sm-12">
-                            <input id="image" type="file" name="image" accept="image/*" />
+                            <input id="image" type="file" name="image" accept="image/*" onchange="readURL(this);"/>
                             <input type="hidden" name="hidden_image" id="hidden_image" />
                         </div>
                     </div>
@@ -88,6 +88,55 @@ $(document).ready(function() {
         $('#productAddUpdate').html("Add New Product");
         $('#product-modal').modal('show');
         $('#img-preview').attr('src', '../no-image.png');
+    });
+
+    // edit product
+    $('body').on('click', '#edit-product', function() {
+        var product_id = $(this).data('pid');
+        $.ajax({
+            type: "get",
+            url: '/product-details/'+product_id,
+            success: function(data) {
+                $('#productAddUpdate').html("Edit Product");
+                $('#product-modal').modal('show');
+                $('#product_id').val(data.id);
+                $('#product_name').val(data.name);
+                $('#upc_no').val(data.upc);
+                $('#price').val(data.price);
+                $('#status').val(data.status);
+                $('#img-preview').attr('alt', 'No image available');
+                if (data.image) {
+                    $('#img-preview').attr('src', '../storage/product/' + data.image);
+                    $('#hidden_image').val(data.image);
+                }
+            },
+            error: function(data) {
+                console.log('Error:', data);
+            }
+        });
+    });
+
+    // delete product
+    $('body').on('click', '#delete-product', function() {
+        var product_id = $(this).data("pid");
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        if (confirm("Are You sure want to delete this product !")) {
+            $.ajax({
+                type: "delete",
+                url: '/product-delete/'+product_id,
+                success: function(data) {
+                    alert("Product deleted successfully");
+                    $('#p_table').html(data.view);
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
     });
 });
 

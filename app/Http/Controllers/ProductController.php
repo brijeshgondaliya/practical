@@ -45,7 +45,7 @@ class ProductController extends Controller
             'status' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg|max:2048',
        ]);
-        
+        $product_id = $request->product_id; // for update time
         $product_data = [
             'name' => $request->product_name,
             'price' => $request->price,
@@ -53,6 +53,10 @@ class ProductController extends Controller
             'status' => $request->status
         ];
         if ($files = $request->file('image')) {
+            if(!empty($request->hidden_image)){
+                // remove old image
+                \File::delete(storage_path().'/app/public/product/'.$request->hidden_image);
+            }
             //insert new image
             $filename_extention = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filename_extention, PATHINFO_FILENAME);
@@ -63,32 +67,42 @@ class ProductController extends Controller
             $image = $new_file_name . "." . $extension;
             $product_data['image'] = $image;
         }
-        $product_add = Product::create($product_data);
+        $product_add_update = Product::updateOrCreate(['id' => $product_id], $product_data);
         $all_product = Product::orderBy('id','DESC')->get();
         $view = view('product-table', ['all_product' => $all_product])->render();
         return response()->json(['view' => $view]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Get Product Details From Product Id
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @author Brijesh
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function productDetails($id)
     {
-        //
+        $product_detail = Product::where('id', $id)->first();
+        return response()->json($product_detail);
     }
 
     /**
-     * Display the specified resource.
+     * Delete the specified product.
      *
-     * @param  \App\Models\Product  $product
+     * @author Brijesh
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function productDelete($id)
     {
-        //
+        $product_data = Product::where('id',$id)->first(['image']);
+        \File::delete(storage_path().'/app/public/product/'.$product_data->image);
+        $product = Product::where('id',$id)->delete();
+
+        $all_product = Product::orderBy('id','DESC')->get();
+        $view = view('product-table', ['all_product' => $all_product])->render();
+        
+        return response()->json(['view' => $view]);
     }
 
     /**
