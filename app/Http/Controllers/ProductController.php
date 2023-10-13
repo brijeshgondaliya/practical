@@ -39,34 +39,32 @@ class ProductController extends Controller
     public function productAddUpdate(Request $request)
     {
         $request->validate([
-            'product_name' => 'required',
-            'upc_no' => 'required',
-            'price' => 'required',
-            'status' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            // 'product_name' => 'required',
+            // 'upc_no' => 'required',
+            // 'price' => 'required',
+            // 'status' => 'required',
+            // 'image' => 'image|mimes:jpeg,png,jpg|max:2048',
        ]);
         $product_id = $request->product_id; // for update time
-        $product_data = [
-            'name' => $request->product_name,
-            'price' => $request->price,
-            'upc' => $request->upc_no,
-            'status' => $request->status
-        ];
-        if ($files = $request->file('image')) {
-            if(!empty($request->hidden_image)){
-                // remove old image
-                \File::delete(storage_path().'/app/public/product/'.$request->hidden_image);
-            }
-            //insert new image
-            $filename_extention = $request->file('image')->getClientOriginalName();
-            $filename = pathinfo($filename_extention, PATHINFO_FILENAME);
-            $new_file_name = time() . '_' . $filename;
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $file = $request->file('image')->storeAs("public/product/",       $new_file_name . "." . $extension);
+        $product_data = $request->all();
+        // $product_data = [
+        //     'username' => $request->username,
+        // ];
+        // if ($files = $request->file('image')) {
+        //     if(!empty($request->hidden_image)){
+        //         // remove old image
+        //         \File::delete(storage_path().'/app/public/product/'.$request->hidden_image);
+        //     }
+        //     //insert new image
+        //     $filename_extention = $request->file('image')->getClientOriginalName();
+        //     $filename = pathinfo($filename_extention, PATHINFO_FILENAME);
+        //     $new_file_name = time() . '_' . $filename;
+        //     $extension = $request->file('image')->getClientOriginalExtension();
+        //     $file = $request->file('image')->storeAs("public/product/",       $new_file_name . "." . $extension);
 
-            $image = $new_file_name . "." . $extension;
-            $product_data['image'] = $image;
-        }
+        //     $image = $new_file_name . "." . $extension;
+        //     $product_data['image'] = $image;
+        // }
         $product_add_update = Product::updateOrCreate(['id' => $product_id], $product_data);
         $all_product = Product::orderBy('id','DESC')->get();
         $view = view('product-table', ['all_product' => $all_product])->render();
@@ -95,8 +93,8 @@ class ProductController extends Controller
      */
     public function productDelete($id)
     {
-        $product_data = Product::where('id',$id)->first(['image']);
-        \File::delete(storage_path().'/app/public/product/'.$product_data->image);
+        // $product_data = Product::where('id',$id)->first(['image']);
+        // \File::delete(storage_path().'/app/public/product/'.$product_data->image);
         $product = Product::where('id',$id)->delete();
 
         $all_product = Product::orderBy('id','DESC')->get();

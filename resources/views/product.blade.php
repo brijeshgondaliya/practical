@@ -35,24 +35,69 @@
                 <form id="product_form" name="product_form" class="form-horizontal" enctype="multipart/form-data">
                     <input type="hidden" name="product_id" id="product_id" />
                     <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">Name</label>
+                        <label for="username" class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Enter Name" value="" maxlength="50" required="" />
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Name" value="" maxlength="50" required="" />
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="contact" class="col-sm-2 control-label">Contact</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="contact" name="contact" value="" maxlength="10" required="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pick_date" class="col-sm-4 control-label">Pick Date</label>
+                        <div class="col-sm-12">
+                            <input type="date" class="form-control" id="pick_date" name="pick_date" value="" required="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pick_time" class="col-sm-4 control-label">Pick Time</label>
+                        <div class="col-sm-12">
+                            <input type="time" class="form-control" id="pick_time" name="pick_time" value="" required="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Car</label>
+                        <div class="col-sm-12">
+                            <select class="form-control" id="car_type" name="car_type">
+                                <option value="Sedan">Sedan</option>
+                                <option value="Ertiga">Ertiga</option>
+                                <option value="Innova">Innova</option>
+                                <option value="Innova Crystal">Innova Crystal</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="days" class="col-sm-4 control-label">Days</label>
+                        <div class="col-sm-12">
+                            <input type="number" class="form-control" id="days" name="days" value="" required="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Trip</label>
+                        <div class="col-sm-12">
+                            <select class="form-control" id="trip_type" name="trip_type">
+                                <option value="On Way">On Way</option>
+                                <option value="Local">Local</option>
+                                <option value="Road Trip">Road Trip</option>
+                            </select>
+                        </div>
+                    </div>
+                    {{-- <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">UPC</label>
                         <div class="col-sm-12">
                             <input type="number" class="form-control" id="upc_no" name="upc_no" placeholder="Enter UPC" value="" maxlength="50" required="" maxlength="12" />
                         </div>
-                    </div>
-                    <div class="form-group">
+                    </div> --}}
+                    {{-- <div class="form-group">
                         <label class="col-sm-2 control-label">Price</label>
                         <div class="col-sm-12">
                             <input type="number" class="form-control" id="price" name="price" placeholder="Enter Price" value="" required="" />
                         </div>
-                    </div>
-                    <div class="form-group">
+                    </div> --}}
+                    {{-- <div class="form-group">
                         <label class="col-sm-2 control-label">Status</label>
                         <div class="col-sm-12">
                             <select class="form-control" id="status" name="status">
@@ -60,15 +105,15 @@
                                 <option value="Deactive">Deactive</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group">
+                    </div> --}}
+                    {{-- <div class="form-group">
                         <label class="col-sm-2 control-label">Image</label>
                         <div class="col-sm-12">
                             <input id="image" type="file" name="image" accept="image/*" onchange="readURL(this);"/>
                             <input type="hidden" name="hidden_image" id="hidden_image" />
                         </div>
                     </div>
-                    <img id="img-preview" src="../no-image.png" alt="Preview" class="form-group hidden" width="100" height="100" />
+                    <img id="img-preview" src="../no-image.png" alt="Preview" class="form-group hidden" width="100" height="100" /> --}}
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" class="btn btn-primary" id="btn-save" value="create">Submit</button>
                     </div>
@@ -87,7 +132,7 @@ $(document).ready(function() {
         $('#product_form').trigger("reset");
         $('#productAddUpdate').html("Add New Product");
         $('#product-modal').modal('show');
-        $('#img-preview').attr('src', '../no-image.png');
+        // $('#img-preview').attr('src', '../no-image.png');
     });
 
     // edit product
@@ -104,11 +149,11 @@ $(document).ready(function() {
                 $('#upc_no').val(data.upc);
                 $('#price').val(data.price);
                 $('#status').val(data.status);
-                $('#img-preview').attr('alt', 'No image available');
-                if (data.image) {
-                    $('#img-preview').attr('src', '../storage/product/' + data.image);
-                    $('#hidden_image').val(data.image);
-                }
+                // $('#img-preview').attr('alt', 'No image available');
+                // if (data.image) {
+                //     $('#img-preview').attr('src', '../storage/product/' + data.image);
+                //     $('#hidden_image').val(data.image);
+                // }
             },
             error: function(data) {
                 console.log('Error:', data);
